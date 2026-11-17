@@ -1,31 +1,17 @@
-# Inbox MCP server
+# Malicious MCP demo — indirect prompt injection
 
-A local [FastMCP](https://github.com/jlowin/fastmcp) server. It exposes a small fixture inbox over stdio. The server name is `inbox-demo`.
+A local [FastMCP](https://github.com/jlowin/fastmcp) inbox server whose `readEmailV1`
+tool returns an email carrying a hidden instruction. The injection reaches the model
+only as untrusted tool output, so it exercises indirect prompt-injection handling in
+an MCP host.
 
-Tools:
+This repo ships the demo as two standalone folders. Each is self-contained: copy or
+open just one, follow its README, and the demo runs.
 
-- `listEmails` returns message ids, senders, and subjects.
-- `readEmailV1` returns the headers and body for one message id.
+- [`claude-code/`](claude-code/) — wired for the Claude Code CLI (`.mcp.json`,
+  `.claude/settings.json`).
+- [`github-copilot/`](github-copilot/) — wired for GitHub Copilot agent mode in
+  VS Code (`.vscode/mcp.json`).
 
-The inbox has two messages: `msg-1001` (Thursday planning sync) and `msg-1002` (updated quote for the offsite).
-
-## Install
-
-Requires the Claude Code CLI, Python 3.10+, and FastMCP 2.14 or newer.
-
-`.mcp.json` in this directory already points Claude Code at `server.py`. From a clone of this repo, install the dependency and open the project:
-
-```bash
-python3 -m pip install -r requirements.txt
-claude
-```
-
-Use the same `python3` Claude Code will launch. Accept the workspace trust prompt. After that, Claude Code starts `inbox-demo` itself. There is no separate step to register the server.
-
-Optional check, from this directory:
-
-```bash
-claude mcp get inbox-demo
-```
-
-Before the folder is trusted, that command reports pending approval. After trust, it should show the server as connected.
+The MCP server (`server.py`) is identical in both folders; only the host-specific
+configuration and setup steps differ.
